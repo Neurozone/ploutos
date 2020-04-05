@@ -8,14 +8,14 @@
 
     <title>Cover Template for Bootstrap</title>
 
-    <link href="{{ base_url }}/templates/{{ template_name }}/css/dropzone.min.css" type="text/css" rel="stylesheet" />
-    <link href="{{ base_url }}/templates/{{ template_name }}/css/basic.min.css" type="text/css" rel="stylesheet" />
-    <link href="{{ base_url }}/templates/{{ template_name }}/css/style.css" type="text/css" rel="stylesheet" />
+    <link href="{{ base_url }}/templates/{{ template_name }}/css/dropzone.min.css" type="text/css" rel="stylesheet"/>
+    <link href="{{ base_url }}/templates/{{ template_name }}/css/basic.min.css" type="text/css" rel="stylesheet"/>
+    <link href="{{ base_url }}/templates/{{ template_name }}/css/style.css" type="text/css" rel="stylesheet"/>
 
     <!-- Bootstrap core CSS -->
     <link href="{{ base_url }}/templates/{{ template_name }}/css/bootstrap.min.css" rel="stylesheet">
     <script src="{{ base_url }}/templates/{{ template_name }}/js/dropzone.min.js"></script>
-    
+
 </head>
 
 <body class="text-center">
@@ -34,13 +34,14 @@
 
     <main role="main" class="inner cover">
         <p class="lead">
-        <form action="{{ base_url }}/upload" class="dropzone"></form>
+        <form action="{{ base_url }}/upload" class="dropzone" id="my-dropzone"></form>
         </p>
     </main>
 
     <footer class="mastfoot mt-auto">
         <div class="inner">
-            <p>Cover template for <a href="https://getbootstrap.com/">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+            <p>Cover template for <a href="https://getbootstrap.com/">Bootstrap</a>, by <a
+                        href="https://twitter.com/mdo">@mdo</a>.</p>
         </div>
     </footer>
 </div>
@@ -49,9 +50,22 @@
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
 <script>window.jQuery || document.write('<script src="{{ base_url }}/templates/{{ template_name }}/js/vendor/jquery-slim.min.js"><\/script>')</script>
 <script src="{{ base_url }}/templates/{{ template_name }}/js/vendor/popper.min.js"></script>
 <script src="{{ base_url }}/templates/{{ template_name }}/js/bootstrap.min.js"></script>
+<script>
+    Dropzone.options.myDropzone = {
+        init: function () {
+            this.on("success", function (file, responseText) {
+// Handle the responseText here. For example, add the text to the preview element:
+                file.previewTemplate.appendChild(document.createTextNode(responseText));
+            });
+        }
+    };
+</script>
+
 </body>
 </html>
