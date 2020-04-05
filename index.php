@@ -71,7 +71,7 @@ $router->post('/upload', function () use ($twig, $templateName) {
 
     }
 
-    return SITE_URL . '/uploads/' . $_FILES['file']['name'] ;
+    return json_encode(SITE_URL . '/uploads/' . $_FILES['file']['name']) ;
 });
 
 $router->run();
