@@ -42,12 +42,13 @@ $twig->addExtension(new \Twig\Extension\DebugExtension());
 
 $router = new \Bramus\Router\Router();
 
-$router->get('/', function () use ($twig) {
+$router->get('/', function () use ($twig,$templateName) {
 
 
     echo $twig->render('index.twig',
         [
             'base_url' => SITE_URL
+            'template_name' => $templateName;
         ]
     );
 
