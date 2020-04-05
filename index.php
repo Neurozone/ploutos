@@ -47,8 +47,8 @@ $router->get('/', function () use ($twig,$templateName) {
 
     echo $twig->render('index.twig',
         [
-            'base_url' => SITE_URL
-            'template_name' => $templateName;
+            'base_url' => SITE_URL,
+            'template_name' => $templateName
         ]
     );
 
