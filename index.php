@@ -42,7 +42,7 @@ $twig->addExtension(new \Twig\Extension\DebugExtension());
 
 $router = new \Bramus\Router\Router();
 
-$router->get('/', function () use ($twig,$templateName) {
+$router->get('/', function () use ($twig, $templateName) {
 
 
     echo $twig->render('index.twig',
@@ -54,22 +54,24 @@ $router->get('/', function () use ($twig,$templateName) {
 
 });
 
-$router->post('/upload', function () use ($twig,$templateName) {
+$router->post('/upload', function () use ($twig, $templateName) {
 
-$ds          = DIRECTORY_SEPARATOR;  //1
-$storeFolder = 'uploads';   //2
+    $ds = DIRECTORY_SEPARATOR;  //1
+    $storeFolder = 'uploads';   //2
 
-if (!empty($_FILES)) {
+    if (!empty($_FILES)) {
 
-    $tempFile = $_FILES['file']['tmp_name'];          //3
+        $tempFile = $_FILES['file']['tmp_name'];          //3
 
-    $targetPath = dirname( __FILE__ ) . $ds. $storeFolder . $ds;  //4
+        $targetPath = dirname(__FILE__) . '/' . $storeFolder . '/';  //4
 
-    $targetFile =  $targetPath. $_FILES['file']['name'];  //5
+        $targetFile = $targetPath . $_FILES['file']['name'];  //5
 
-    move_uploaded_file($tempFile,$targetFile); //6
+        move_uploaded_file($tempFile, $targetFile); //6
 
-}
+    }
+
+    return SITE_URL . '/uploads/' . $_FILES['file']['name'] ; 
 });
 
 $router->run();
