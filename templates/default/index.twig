@@ -20,7 +20,7 @@
 
 <body class="text-center">
 
-<div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+<span class="cover-container d-flex h-100 p-3 mx-auto flex-column">
     <header class="masthead mb-auto">
         <div class="inner">
             <h3 class="masthead-brand">Cover</h3>
@@ -36,7 +36,7 @@
         <p class="lead">
         <form action="{{ base_url }}/upload" class="dropzone" id="myDropzone"></form>
         </p>
-        <div id="response"></div>
+        <span  id="response"></span>
     </main>
 
     <footer class="mastfoot mt-auto">
@@ -64,7 +64,7 @@
             this.on("success", function(file, responseText) {
                 //var responseText = file.id // or however you would point to your assigned file ID here;
                 console.log(responseText);
-                $("#response").innerHTML = responseText;
+                $("#response").text(responseText);
                 // console should show the ID you pointed to
                 // do stuff with file.id ...
             });
