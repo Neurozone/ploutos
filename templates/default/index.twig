@@ -36,7 +36,7 @@
         <p class="lead">
         <form action="{{ base_url }}/upload" class="dropzone" id="myDropzone"></form>
         </p>
-        <p id="response"></p>
+        <div id="response"></div>
     </main>
 
     <footer class="mastfoot mt-auto">
@@ -64,7 +64,7 @@
             this.on("success", function(file, responseText) {
                 //var responseText = file.id // or however you would point to your assigned file ID here;
                 console.log(responseText);
-                $("#response").text = responseText;
+                $("#response").innerHTML = responseText;
                 // console should show the ID you pointed to
                 // do stuff with file.id ...
             });
