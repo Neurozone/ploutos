@@ -1,12 +1,7 @@
 <?php
-/**
- * BoZoN core part:
- * Sets Constants, language, directories, htaccess and bozon's behaviour (files to download and files to echo)
- * @author: Bronco (bronco@warriordudimanche.net)
- **/
 
 # INIT SESSIONS VARS AND ENVIRONMENT
-define('VERSION', '2.4 (build 18)');
+define('VERSION', '1.0 (build 1)');
 
 start_session();
 $message = '';
@@ -14,13 +9,16 @@ $message = '';
 #################################################
 # Prepare or load config
 #################################################
-include('config.php');
+include('config/config.php');
 if (!$root) {
     $root = getRacine();
 }
 define('ROOT', $root);
 if (empty($_SESSION['private_folder'])) {
     $_SESSION['private_folder'] = $default_private;
+}
+if (empty($_SESSION['default_thumbs'])) {
+    $_SESSION['default_thumbs'] = $default_thumbs;
 }
 if (empty($_SESSION['config_file'])) {
     $_SESSION['config_file'] = $default_config_file;
@@ -136,8 +134,8 @@ if (empty($_SESSION['profiles_rights_file'])) {
 }
 
 # Check system folders
-if (!is_dir('thumbs/')) {
-    mkdir('thumbs/');
+if (!is_dir($default_thumbs)) {
+    mkdir($default_thumbs);
 }
 if (!is_dir($_SESSION['temp_folder'])) {
     mkdir($_SESSION['temp_folder'], 0744, true);
@@ -148,11 +146,11 @@ if (!is_dir($_SESSION['upload_root_path'])) {
 if (!empty($_SESSION['upload_user_path']) && !is_dir($_SESSION['upload_root_path'] . $_SESSION['upload_user_path'])) {
     mkdir($_SESSION['upload_root_path'] . $_SESSION['upload_user_path'], 0744, true);
 }
-if (!empty($_SESSION['upload_user_path']) && !is_dir('thumbs/' . $_SESSION['upload_root_path'] . $_SESSION['upload_user_path'])) {
-    mkdir('thumbs/' . $_SESSION['upload_root_path'] . $_SESSION['upload_user_path'], 0744, true);
+if (!empty($_SESSION['upload_user_path']) && !is_dir($default_thumbs . $_SESSION['upload_root_path'] . $_SESSION['upload_user_path'])) {
+    mkdir($default_thumbs . $_SESSION['upload_root_path'] . $_SESSION['upload_user_path'], 0744, true);
 }
-if (!is_dir('thumbs/' . $_SESSION['upload_root_path'])) {
-    mkdir('thumbs/' . $_SESSION['upload_root_path']);
+if (!is_dir($default_thumbs . $_SESSION['upload_root_path'])) {
+    mkdir($default_thumbs . $_SESSION['upload_root_path']);
 }
 if (!is_dir($_SESSION['private_folder'] . 'trees')) {
     mkdir($_SESSION['private_folder'] . 'trees', 0744);
@@ -217,11 +215,11 @@ if (!$disable_non_installed_libs_warning) {
     }
 }
 # Check files
-if (!is_file('thumbs/' . $_SESSION['upload_root_path'] . '.htaccess')) {
-    file_put_contents('thumbs/' . $_SESSION['upload_root_path'] . '.htaccess', 'deny from all');
+if (!is_file($default_thumbs . $_SESSION['upload_root_path'] . '.htaccess')) {
+    file_put_contents($default_thumbs . $_SESSION['upload_root_path'] . '.htaccess', 'deny from all');
 }
-if (!is_file('thumbs/' . $_SESSION['upload_root_path'] . 'index.html')) {
-    file_put_contents('thumbs/' . $_SESSION['upload_root_path'] . 'index.html', ' ');
+if (!is_file($default_thumbs . $_SESSION['upload_root_path'] . 'index.html')) {
+    file_put_contents($default_thumbs . $_SESSION['upload_root_path'] . 'index.html', ' ');
 }
 if (!is_file($_SESSION['temp_folder'] . '.htaccess')) {
     file_put_contents($_SESSION['temp_folder'] . '.htaccess', '
@@ -235,17 +233,17 @@ Deny from all
 if (!is_file($_SESSION['upload_root_path'] . 'index.html')) {
     file_put_contents($_SESSION['upload_root_path'] . 'index.html', ' ');
 }
-if (!is_file('thumbs/.htaccess')) {
-    file_put_contents('thumbs/.htaccess', 'deny from all');
+if (!is_file($default_thumbs . '/.htaccess')) {
+    file_put_contents($default_thumbs . '/.htaccess', 'deny from all');
 }
-if (!is_file('thumbs/index.html')) {
-    file_put_contents('thumbs/index.html', ' ');
+if (!is_file($default_thumbs . '/.index.html')) {
+    file_put_contents($default_thumbs . '/.index.html', ' ');
 }
-if (!empty($_SESSION['upload_user_path']) && !is_file('thumbs/' . $_SESSION['upload_root_path'] . $_SESSION['upload_user_path'] . '.htaccess')) {
-    file_put_contents('thumbs/' . $_SESSION['upload_root_path'] . $_SESSION['upload_user_path'] . '.htaccess', 'deny from all');
+if (!empty($_SESSION['upload_user_path']) && !is_file($default_thumbs . $_SESSION['upload_root_path'] . $_SESSION['upload_user_path'] . '.htaccess')) {
+    file_put_contents($default_thumbs . $_SESSION['upload_root_path'] . $_SESSION['upload_user_path'] . '.htaccess', 'deny from all');
 }
-if (!empty($_SESSION['upload_user_path']) && !is_file('thumbs/' . $_SESSION['upload_root_path'] . $_SESSION['upload_user_path'] . 'index.html')) {
-    file_put_contents('thumbs/' . $_SESSION['upload_root_path'] . $_SESSION['upload_user_path'] . 'index.html', ' ');
+if (!empty($_SESSION['upload_user_path']) && !is_file($default_thumbs . $_SESSION['upload_root_path'] . $_SESSION['upload_user_path'] . 'index.html')) {
+    file_put_contents($default_thumbs . $_SESSION['upload_root_path'] . $_SESSION['upload_user_path'] . 'index.html', ' ');
 }
 
 if (!is_file($_SESSION['private_folder'] . '.htaccess')) {
@@ -433,7 +431,7 @@ function delete_file_or_folder($id = null, $ids = null, $tree = array())
         $fthumbs = implode('/', $fthumbs);
         # delete dir
         rrmdir($f);
-        rrmdir('thumbs/' . $fthumbs);
+        rrmdir($default_thumbs . $fthumbs);
         # remove all vanished sub files & folders from id file
         foreach ($ids as $id => $path) {
             if (strpos($path, $f . '/') !== false) {
@@ -452,7 +450,7 @@ function new_folder($folder = null)
     if (!$folder) {
         return false;
     }
-    $thumbs_path = 'thumbs/' . $_SESSION['upload_user_path'] . addslash_if_needed($_SESSION['current_path']);
+    $thumbs_path = $default_thumbs . $_SESSION['upload_user_path'] . addslash_if_needed($_SESSION['current_path']);
     $path = $_SESSION['upload_root_path'] . $_SESSION['upload_user_path'] . addslash_if_needed($_SESSION['current_path']);
     $complete_path = $path . $folder;
     $complete_thumbs = $thumbs_path . $folder;
@@ -755,7 +753,7 @@ function get_thumbs_name($file)
     if ($file[0] == '/') {
         $file = substr($file, 1);
     }
-    return 'thumbs/' . preg_replace('#\.(jpe?g|png|gif)#i', '_THUMB_' . $auto_thumb['default_width'] . 'x' . $auto_thumb['default_height'] . '.$1', $file);
+    return $_SESSION['default_thumbs'] . preg_replace('#\.(jpe?g|png|gif)#i', '_THUMB_' . $auto_thumb['default_width'] . 'x' . $auto_thumb['default_height'] . '.$1', $file);
 }
 
 function get_thumbs_name_gallery($file)
@@ -763,7 +761,7 @@ function get_thumbs_name_gallery($file)
     if ($file[0] == '/') {
         $file = substr($file, 1);
     }
-    return 'thumbs/' . preg_replace('#\.(jpe?g|png|gif)#i', '_THUMBGALLERY_' . $_SESSION['config']['gallery_thumbs_width'] . 'x' . $_SESSION['config']['gallery_thumbs_width'] . '.$1', $file);
+    return $_SESSION['default_thumbs'] . preg_replace('#\.(jpe?g|png|gif)#i', '_THUMBGALLERY_' . $_SESSION['config']['gallery_thumbs_width'] . 'x' . $_SESSION['config']['gallery_thumbs_width'] . '.$1', $file);
 }
 
 function recursive_glob($dir = '.', $files = true)
