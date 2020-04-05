@@ -63,7 +63,9 @@
             thisDropzone = this;
             this.on("success", function(file, responseText) {
                 //var responseText = file.id // or however you would point to your assigned file ID here;
-                console.log(responseText); // console should show the ID you pointed to
+                console.log(responseText);
+                $(#response).innerText = responseText;
+                // console should show the ID you pointed to
                 // do stuff with file.id ...
             });
         }
